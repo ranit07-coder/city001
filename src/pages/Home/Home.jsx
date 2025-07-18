@@ -4,12 +4,14 @@ import Navbar from '../../components/Navbar/Navbar'
 import icons8greendot from '../../assets/icons8-green-dot-48.png'
 import icons8warningdot from '../../assets/icons8-warning-48.png'
 import icons8growth from '../../assets/icons8-growth-60.png'
+import happiness from '../../assets/happiness.png'
 const Home = () => {
   return (
     <div className="home">
       <Navbar />
       <div className="main-box">
         <div className='status'>Live Status</div>
+
 
         <div className='event-box'>
           <div className="event-info">
@@ -33,6 +35,22 @@ const Home = () => {
             <div className='Predictionsevent'>Predictions</div>
           </div>
           <div className='Predictionsnumevent'>3</div>
+        </div>
+
+        <div className='line'></div>
+
+        <div className="mood-box">
+
+          <div className="mood">
+            <img src={happiness} alt="" className='emoji' />
+            <div className="citymood">City Mood</div>
+          </div>
+
+          <div className="mood-info">
+            <div className="moode">Positive</div>
+            <div className="moodee">72%</div>
+          </div>
+
         </div>
 
       </div>

@@ -12,7 +12,14 @@
 .status {
     font-size: 20px;
     font-weight: bold;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #898787;
+    margin-bottom: 16px;
 }
 
 /* Active Events */
@@ -45,7 +52,7 @@
 
 }
 .dotnumevent {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: bold;
     color: #333;
     margin-bottom: 4px;
@@ -84,7 +91,7 @@
 }
 
 .warningnumevent {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: bold;
     color: #ff0000;
     margin-bottom: 4px;
@@ -127,4 +134,58 @@
     color: #0602ff;
     margin-bottom: 4px;
     margin-right: 13px;
+}
+
+/* City Mood */
+
+.mood-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    justify-content: space-between;
+}
+
+.mood {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    
+}
+.emoji {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    color: #000000;
+    filter: drop-shadow(0 0 8px #000000);
+
+    
+    
+}
+.citymood {
+    font-size: 16px;
+    font-weight: bold;
+    color: #343434;
+    margin-bottom: 4px;
+    margin-right: 13px;
+
+}
+
+.mood-info {
+    font-size: 16px;
+    font-weight: bold;
+    color: #343434;
+    margin-bottom: 4px;
+    margin-right: 13px;
+    
+}
+.moodee{
+    font-size: 16px;
+    font-weight: 700;
+    color: #343434;
+    
+    margin-left: 26px;
+   
 }
