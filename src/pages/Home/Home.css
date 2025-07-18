@@ -1,0 +1,130 @@
+.main-box {
+    margin: 24px auto;
+    padding: 24px 40px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-width: 1400px;
+
+
+}
+
+.status {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* Active Events */
+
+.event-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  margin-bottom: 16px;
+}
+.event-info {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    margin-left: 2px;
+}
+
+.dotevent {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+    margin-left: 5px;
+    margin-right: 10px;
+
+}
+.dotnumevent {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+    margin-right: 10px;
+}
+
+/* High Priority */
+
+.priority-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.priority-info {
+    display: flex;
+    align-items: center;
+}
+
+.warning {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+.warningevent {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+    margin-right: 13px;
+    
+}
+
+.warningnumevent {
+    font-size: 17px;
+    font-weight: bold;
+    color: #ff0000;
+    margin-bottom: 4px;
+    margin-right: 13px;
+}
+
+/* Predictions */
+
+.Predictions-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.prediction-info {
+    display: flex;
+    align-items: center;
+}
+
+.prediction {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+.Predictionsevent {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+    margin-right: 13px;
+    
+}
+.Predictionsnumevent {
+    font-size: 18px;
+    font-weight:bold;
+    color: #0602ff;
+    margin-bottom: 4px;
+    margin-right: 13px;
+}
