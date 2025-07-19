@@ -31,8 +31,10 @@ const Navbar = () => {
           })}
         </div>
       </div>
-      <img src={bell} alt="" className='bell' />
-      <img src={dotsMenu} alt="" className='dots-menu' />
+      
+      <button className='bell-button'><img src={bell} alt="" className='bell' /></button>
+      <button className='menu-button'><img src={dotsMenu} alt="" className='dots-menu' /></button>
+
     </div>
   )
 }

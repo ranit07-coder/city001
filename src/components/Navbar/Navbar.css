@@ -65,6 +65,21 @@ body {
     padding-left: 30px;
     
 }
+
+.bell-button:hover {
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: drop-shadow(0 0 3px #ffe600);
+}
+.menu-button:hover {
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: drop-shadow(0 0 2px #ffea00);
+}
+
+
 .dots-menu {
     align-items: center;
     height: 30px;

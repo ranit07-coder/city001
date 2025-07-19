@@ -5,10 +5,13 @@ import icons8greendot from '../../assets/icons8-green-dot-48.png'
 import icons8warningdot from '../../assets/icons8-warning-48.png'
 import icons8growth from '../../assets/icons8-growth-60.png'
 import happiness from '../../assets/happiness.png'
+import Map from '../../components/Map/map'
+
 const Home = () => {
   return (
     <div className="home">
       <Navbar />
+
       <div className="main-box">
         <div className='status'>Live Status</div>
 
@@ -54,6 +57,17 @@ const Home = () => {
         </div>
 
       </div>
+
+      
+      <button className="button">
+        <div className='button-text'>Click Here</div>
+      </button>
+
+      <div className="map-box">
+        <Map />
+      </div>
+
+
     </div>
   )
 }
