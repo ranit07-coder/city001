@@ -84,6 +84,9 @@ const Map = () => {
   return (
     <div className="map">
       <button className="filter">
+
+        <div className="map-buttons"></div>
+
         <div className="map-filter">
           <img src={filter} alt="" className='filterimg' />
         </div>

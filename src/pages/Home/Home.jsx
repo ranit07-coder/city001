@@ -6,6 +6,7 @@ import icons8warningdot from '../../assets/icons8-warning-48.png'
 import icons8growth from '../../assets/icons8-growth-60.png'
 import happiness from '../../assets/happiness.png'
 import Map from '../../components/Map/Map.jsx'
+import Event from '../../components/Event/Event.jsx'
 
 const Home = () => {
   return (
@@ -66,6 +67,10 @@ const Home = () => {
       <div className="map-box">
         <Map />
       </div>
+
+      <div className="event-section">
+        <Event />
+        </div>
 
 
     </div>
