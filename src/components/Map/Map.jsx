@@ -2,28 +2,42 @@ import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './map.css';
-import filter from '../../assets/filter.png';
-import navigation from '../../assets/navigation.png';
 
 const Map = () => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const markerRef = useRef(null);
   const [error, setError] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [currentStyle, setCurrentStyle] = useState('streets');
+
+  const mapStyles = {
+    streets: 'https://api.maptiler.com/maps/streets/style.json?key=KdLhMN46zBrXqGDvET6g',
+    satellite: 'https://api.maptiler.com/maps/satellite/style.json?key=KdLhMN46zBrXqGDvET6g',
+    hybrid: 'https://api.maptiler.com/maps/hybrid/style.json?key=KdLhMN46zBrXqGDvET6g',
+    basic: 'https://api.maptiler.com/maps/basic/style.json?key=KdLhMN46zBrXqGDvET6g',
+    outdoor: 'https://api.maptiler.com/maps/outdoor/style.json?key=KdLhMN46zBrXqGDvET6g'
+  };
+
+  const changeMapStyle = (styleName) => {
+    if (mapInstance.current && mapStyles[styleName]) {
+      mapInstance.current.setStyle(mapStyles[styleName]);
+      setCurrentStyle(styleName);
+      setShowFilters(false);
+    }
+  };
 
   useEffect(() => {
     if (!mapInstance.current) {
       mapInstance.current = new maplibregl.Map({
         container: mapRef.current,
-        style: `https://api.maptiler.com/maps/streets/style.json?key=KdLhMN46zBrXqGDvET6g`,
-        center: [77.5946, 12.9716], // Bengaluru coordinates
+        style: mapStyles[currentStyle],
+        center: [77.5946, 12.9716],
         zoom: 12,
         attributionControl: true
       });
 
-      // Wait for map to load before adding marker
       mapInstance.current.on('load', () => {
-        // Add navigation controls
         mapInstance.current.addControl(
           new maplibregl.NavigationControl({
             showCompass: true,
@@ -31,7 +45,6 @@ const Map = () => {
           })
         );
 
-        // Add initial marker
         markerRef.current = new maplibregl.Marker({
           color: "#FF0000",
           draggable: false
@@ -47,58 +60,57 @@ const Map = () => {
         mapInstance.current = null;
       }
     };
-  }, []);
+  }, 
+);
 
   const handleLocationClick = () => {
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      return;
-    }
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          mapInstance.current.setCenter([longitude, latitude]);
+          mapInstance.current.setZoom(14);
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { longitude, latitude } = position.coords;
-        
-        // Update marker position
-        if (markerRef.current) {
-          markerRef.current.setLngLat([longitude, latitude]);
+          if (markerRef.current) {
+            markerRef.current.remove();
+          }
+
+          markerRef.current = new maplibregl.Marker()
+            .setLngLat([longitude, latitude])
+            .addTo(mapInstance.current);
+        },
+        (error) => {
+          setError(error.message);
         }
-
-        // Fly to user location
-        mapInstance.current.flyTo({
-          center: [longitude, latitude],
-          zoom: 14,
-          essential: true,
-          duration: 2000 // Animation duration in milliseconds
-        });
-
-        setError(null);
-      },
-      (error) => {
-        setError('Unable to get your location. Please check your permissions.');
-        console.error('Error getting location:', error);
-      }
-    );
+      );
+    } else {
+      setError('Geolocation is not supported by this browser.');
+    }
   };
 
   return (
     <div className="map">
-      <button className="filter">
+      <div className="map-controls">
+        <div className="controls-container">
+          <button className="filter" onClick={() => setShowFilters(!showFilters)}>
+            Filters
+          </button>
+          
+          {showFilters && (
+            <div className="filter-options">
+              <button onClick={() => changeMapStyle('streets')}>Streets</button>
+              <button onClick={() => changeMapStyle('satellite')}>Satellite</button>
+              <button onClick={() => changeMapStyle('hybrid')}>Hybrid</button>
+              <button onClick={() => changeMapStyle('basic')}>Basic</button>
+              <button onClick={() => changeMapStyle('outdoor')}>Outdoor</button>
+            </div>
+          )}
 
-        <div className="map-buttons"></div>
-
-        <div className="map-filter">
-          <img src={filter} alt="" className='filterimg' />
+          <button className="location" onClick={handleLocationClick}>
+            My Location
+          </button>
         </div>
-        <div className="filter-title">Filters</div>
-      </button>
-
-      <button className="location" onClick={handleLocationClick}>
-        <div className="my-location">
-          <img src={navigation} alt="" className='navigation' />
-        </div>
-        <div className="location-title">My Location</div>
-      </button>
+      </div>
 
       {error && <div className="error-message">{error}</div>}
       <div ref={mapRef} className="map-container" />
@@ -107,4 +119,3 @@ const Map = () => {
 };
 
 export default Map;
-
