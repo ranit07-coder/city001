@@ -1,12 +1,13 @@
 import React from 'react'
 import './Home.css'
-import Navbar from '../../components/Navbar/Navbar'
-import icons8greendot from '../../assets/icons8-green-dot-48.png'
-import icons8warningdot from '../../assets/icons8-warning-48.png'
-import icons8growth from '../../assets/icons8-growth-60.png'
-import happiness from '../../assets/happiness.png'
-import Map from '../../components/Map/Map.jsx'
-import Event from '../../components/Event/Event.jsx'
+import Navbar from './components/Navbar/Navbar'
+import icons8greendot from './assets/icons8-green-dot-48.png'
+import icons8warningdot from './assets/icons8-warning-48.png'
+import icons8growth from './assets/icons8-growth-60.png'
+import happiness from './assets/happiness.png'
+import Map from './components/Map/Map.jsx'
+import Event from './components/Event/Event.jsx'
+import AIPredictions from './components/AIPredictions/AIPredictions.jsx'
 
 const Home = () => {
   return (
@@ -59,7 +60,7 @@ const Home = () => {
 
       </div>
 
-      
+
       <button className="button">
         <div className='button-text'>Click Here</div>
       </button>
@@ -70,7 +71,11 @@ const Home = () => {
 
       <div className="event-section">
         <Event />
-        </div>
+      </div>
+
+      <div className="AI-prediction">
+        <AIPredictions />
+      </div>
 
 
     </div>

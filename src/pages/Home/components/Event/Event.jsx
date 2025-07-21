@@ -1,7 +1,5 @@
 import React from 'react';
 import './Event.css';
-
-// Import your icons (make sure the paths are correct)
 import car from '../../assets/car.png';
 import drop from '../../assets/drop.png';
 import musicalnote from '../../assets/musical-note.png';
