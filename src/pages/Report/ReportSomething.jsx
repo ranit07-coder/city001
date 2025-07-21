@@ -46,7 +46,7 @@ const ReportSomething = () => {
       <nav className="navbar">
         <img src={download} alt="" className='pic' />
         <div className='navbar-left'>
-          <div className='city'>UrbanLance</div>
+          <div className='city'>UrbanLense</div>
           <div className='urbancity'>Bengaluru Live Intelligence</div>
         </div>
         <div className='datetime'>
