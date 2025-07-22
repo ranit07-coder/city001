@@ -1,80 +1,81 @@
-import React from 'react'
-import './Home.css'
-import Navbar from '../../components/Navbar/Navbar'
-import icons8greendot from '../../assets/icons8-green-dot-48.png'
-import icons8warningdot from '../../assets/icons8-warning-48.png'
-import icons8growth from '../../assets/icons8-growth-60.png'
-import happiness from '../../assets/happiness.png'
-import Map from '../../components/Map/Map.jsx'
-import Event from '../../components/Event/Event.jsx'
+import React, { useState } from 'react';
+import './Home.css';
+import Navbar from '../../components/Navbar/Navbar';
+import icons8greendot from '../../assets/icons8-green-dot-48.png';
+import icons8warningdot from '../../assets/icons8-warning-48.png';
+import icons8growth from '../../assets/icons8-growth-60.png';
+import happiness from '../../assets/happiness.png';
+import Map from '../../components/Map/Map.jsx';
+import Event from '../../components/Event/Event.jsx';
+import BengaluruLive from '../../components/BengaluruLive/BengaluruLive';
 
 const Home = () => {
+  const [showLive, setShowLive] = useState(false);
+
   return (
     <div className="home">
       <Navbar />
 
-      <div className="main-box">
-        <div className='status'>Live Status</div>
+      {showLive ? (
+        <BengaluruLive onClose={() => setShowLive(false)} />
+      ) : (
+        <>
+          <div className="main-box">
+            <div className='status'>Live Status</div>
 
+            <div className='event-box'>
+              <div className="event-info">
+                <img src={icons8greendot} alt="" className='dot' />
+                <div className='dotevent'>Active Events</div>
+              </div>
+              <div className='dotnumevent'>28</div>
+            </div>
 
-        <div className='event-box'>
-          <div className="event-info">
-            <img src={icons8greendot} alt="" className='dot' />
-            <div className='dotevent'>Active Events</div>
+            <div className='priority-box'>
+              <div className="priority-info">
+                <img src={icons8warningdot} alt="" className='warning' />
+                <div className='warningevent'>High Priority</div>
+              </div>
+              <div className='warningnumevent'>5</div>
+            </div>
+
+            <div className='Predictions-box'>
+              <div className="prediction-info">
+                <img src={icons8growth} alt="" className='prediction' />
+                <div className='Predictionsevent'>Predictions</div>
+              </div>
+              <div className='Predictionsnumevent'>3</div>
+            </div>
+
+            <div className='line'></div>
+
+            <div className="mood-box">
+              <div className="mood">
+                <img src={happiness} alt="" className='emoji' />
+                <div className="citymood">City Mood</div>
+              </div>
+              <div className="mood-info">
+                <div className="moode">Positive</div>
+                <div className="moodee">72%</div>
+              </div>
+            </div>
           </div>
-          <div className='dotnumevent'>28</div>
-        </div>
 
-        <div className='priority-box'>
-          <div className="priority-info">
-            <img src={icons8warningdot} alt="" className='warning' />
-            <div className='warningevent'>High Priority</div>
-          </div>
-          <div className='warningnumevent'>5</div>
-        </div>
+          <button className="button" onClick={() => setShowLive(true)}>
+            <div className='button-text'>Click Here</div>
+          </button>
 
-        <div className='Predictions-box'>
-          <div className="prediction-info">
-            <img src={icons8growth} alt="" className='prediction' />
-            <div className='Predictionsevent'>Predictions</div>
-          </div>
-          <div className='Predictionsnumevent'>3</div>
-        </div>
-
-        <div className='line'></div>
-
-        <div className="mood-box">
-
-          <div className="mood">
-            <img src={happiness} alt="" className='emoji' />
-            <div className="citymood">City Mood</div>
+          <div className="map-box">
+            <Map />
           </div>
 
-          <div className="mood-info">
-            <div className="moode">Positive</div>
-            <div className="moodee">72%</div>
+          <div className="event-section">
+            <Event />
           </div>
-
-        </div>
-
-      </div>
-
-      
-      <button className="button">
-        <div className='button-text'>Click Here</div>
-      </button>
-
-      <div className="map-box">
-        <Map />
-      </div>
-
-      <div className="event-section">
-        <Event />
-        </div>
-
-
+        </>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
