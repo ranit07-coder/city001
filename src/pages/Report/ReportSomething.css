@@ -456,3 +456,54 @@ body {
     font-size: 1.25rem; /* text-xl */
   }
 }
+.location-suggestions {
+  margin-top: 5px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  width: 100%;
+  z-index: 99;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.suggestion-item:hover {
+  background-color: #f3f4f6;
+}
+.location-suggestions {
+  margin-top: 5px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  width: 100%;
+  z-index: 99;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.suggestion-item:hover {
+  background-color: #f3f4f6;
+}
+

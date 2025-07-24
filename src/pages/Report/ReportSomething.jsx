@@ -4,15 +4,19 @@ import './ReportSomething.css';
 import download from '../../assets/download.png';
 import bell from '../../assets/bell.png';
 
-// Functional component for the Report Something page
+const GEMINI_API_KEY = "AIzaSyAcbDCRBsGMY1JTAc5yHHAeAYWjRNRwo50";
+const MAPTILER_API_KEY = "KdLhMN46zBrXqGDvET6g";
+
 const ReportSomething = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [formData, setFormData] = useState({
     incidentType: 'traffic-jam-accident',
     description: '',
     photo: null,
-    location: null
+    location: ''
   });
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,15 +34,90 @@ const ReportSomething = () => {
     }));
   };
 
+  const handleLocationChange = async (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, location: value }));
+
+    if (value.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+
+    const response = await fetch(
+      `https://api.maptiler.com/geocoding/${encodeURIComponent(value)}.json?key=${MAPTILER_API_KEY}&limit=5`
+    );
+    const data = await response.json();
+    setSuggestions(data.features || []);
+  };
+
+  const handleSuggestionSelect = (place) => {
+    setFormData(prev => ({ ...prev, location: place.formatted }));
+    setSuggestions([]);
+  };
+
+  const analyzeImageWithGemini = async (imageFile) => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        const base64Image = reader.result.split(',')[1];
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=" + GEMINI_API_KEY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                {
+                  text: `You are an advanced AI agent specializing in urban civic infrastructure analysis. Examine the uploaded image and identify the primary civic anomaly visible — such as traffic congestion, road damage, waterlogging, accident, crowd gathering, or power outage.\n\nGenerate a concise and professional report in this format:\n\n\"Detected: [issue type] near [notable landmark or area].\"\n\nGuidelines:\n- Use a neutral civic-reporting tone.\n- Limit the output to one sentence, maximum 15 words.\n- Mention only what is visually verifiable.\n- Refer to common urban locations in India (e.g., MG Road, Whitefield, Cubbon Park).\n- Do not speculate or add extra descriptions.`
+                },
+                {
+                  inlineData: {
+                    mimeType: imageFile.type,
+                    data: base64Image
+                  }
+                }
+              ]
+            }]
+          })
+        });
+        const data = await response.json();
+        try {
+          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          resolve(reply);
+        } catch (err) {
+          reject("Gemini response parsing failed");
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(imageFile);
+    });
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, photo: file }));
+      setPreviewUrl(URL.createObjectURL(file));
+      const result = await analyzeImageWithGemini(file);
+      console.log("Gemini AI Analysis:", result);
+      setFormData(prev => ({ ...prev, description: result }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitting report:', formData);
-    // Add your submission logic here
-    navigate('/');
+    console.log('Final Report:', formData);
+    localStorage.setItem("latestEvent", JSON.stringify({
+      title: formData.incidentType,
+      description: formData.description,
+      location: formData.location,
+      level: 3,
+      sources: 1
+    }));
+    navigate("/");
   };
 
   const handleClose = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -50,21 +129,8 @@ const ReportSomething = () => {
           <div className='urbancity'>Bengaluru Live Intelligence</div>
         </div>
         <div className='datetime'>
-          <div className='time'>
-            {currentTime.toLocaleTimeString('en-US', { 
-              hour: '2-digit', 
-              minute: '2-digit', 
-              second: '2-digit', 
-              hour12: false 
-            })}
-          </div>
-          <div className='date'>
-            {currentTime.toLocaleDateString('en-US', {
-              weekday: 'short',
-              day: '2-digit',
-              month: 'short'
-            })}
-          </div>
+          <div className='time'>{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</div>
+          <div className='date'>{currentTime.toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'short' })}</div>
         </div>
         <button className='bell-button'>
           <img src={bell} alt="" className='bell' />
@@ -85,13 +151,7 @@ const ReportSomething = () => {
           <section className="report-section">
             <label htmlFor="incidentType" className="report-label">What's happening?</label>
             <div className="report-select-wrapper">
-              <select 
-                id="incidentType" 
-                name="incidentType"
-                className="report-select"
-                value={formData.incidentType}
-                onChange={handleInputChange}
-              >
+              <select id="incidentType" name="incidentType" className="report-select" value={formData.incidentType} onChange={handleInputChange}>
                 <option value="traffic-jam-accident">Traffic Jam or Accident</option>
                 <option value="pothole">Pothole</option>
                 <option value="water-logging">Water Logging</option>
@@ -103,42 +163,53 @@ const ReportSomething = () => {
 
           <section className="report-section">
             <label htmlFor="description" className="report-label">Tell us more</label>
-            <textarea
-              id="description"
-              name="description"
-              className="report-textarea"
-              placeholder="What exactly is happening? Where is it?"
-              rows="5"
-              value={formData.description}
-              onChange={handleInputChange}
-            ></textarea>
+            <textarea id="description" name="description" className="report-textarea" placeholder="What exactly is happening? Where is it?" rows="5" value={formData.description} onChange={handleInputChange}></textarea>
           </section>
+
+          <section className="report-section" style={{ position: 'relative' }}>
+            <label htmlFor="location" className="report-label">Where is it happening?</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              className="report-input"
+              placeholder="e.g., Indiranagar, Bengaluru"
+              value={formData.location || ""}
+              onChange={handleLocationChange}
+              autoComplete="off"
+            />
+            {suggestions.length > 0 && (
+              <ul className="location-suggestions">
+                {suggestions.map((place, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleSuggestionSelect(place)}
+                    className="suggestion-item"
+                  >
+                    {place.formatted}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {previewUrl && (
+            <div className="photo-preview">
+              <img src={previewUrl} alt="Preview" className="preview-img" />
+            </div>
+          )}
 
           <footer className="report-footer">
             <div className="report-actions">
               <div className="action-group-left">
-                <button type="button" className="report-action-button photo-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                    <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z" />
-                    <path fillRule="evenodd" d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3H4.5a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z" />
-                  </svg>
-                  Add Photo
-                </button>
-                <button type="button" className="cancel-button" onClick={handleClose}>
-                  Cancel
-                </button>
+                <label htmlFor="photo-upload" className="report-action-button photo-button">
+                  <input id="photo-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoUpload} />
+                  📷 Add Photo
+                </label>
+                <button type="button" className="cancel-button" onClick={handleClose}>Cancel</button>
               </div>
-              
               <div className="action-group-right">
-                <button type="button" className="report-action-button location-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                    <path fillRule="evenodd" d="M11.54 3.47a.75.75 0 0 1 1.06 0l8.932 8.932a.75.75 0 0 1 0 1.06l-8.932 8.932a.75.75 0 0 1-1.06 0l-8.932-8.932a.75.75 0 0 1 0-1.06l8.932-8.932Z" />
-                  </svg>
-                  Add Location
-                </button>
-                <button type="submit" className="send-button">
-                  Send Reports
-                </button>
+                <button type="submit" className="send-button">Send Reports</button>
               </div>
             </div>
           </footer>
