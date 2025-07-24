@@ -1,47 +1,60 @@
 import React from "react";
-import { FaCarCrash, FaBolt, FaWater, FaExclamationTriangle, FaUserSecret } from "react-icons/fa";
 import "./Event.css";
+import { AlertCircle, Car, MapPin, Construction, CloudDrizzle, Trash2 } from "lucide-react";
+
+const getIcon = (type) => {
+  switch (type.toLowerCase()) {
+    case "pothole": return <Construction size={20} />;
+    case "traffic jam":
+    case "traffic": return <Car size={20} />;
+    case "waterlogging":
+    case "flood": return <CloudDrizzle size={20} />;
+    case "garbage": return <Trash2 size={20} />;
+    case "accident": return <AlertCircle size={20} />;
+    default: return <AlertCircle size={20} />;
+  }
+};
+
+const parseDescription = (description) => {
+  if (!description || !description.toLowerCase().startsWith("detected:")) {
+    return { type: "Civic Alert", location: "Unspecified Area" };
+  }
+  const cleaned = description.replace("Detected:", "").trim();
+  const [issue, ...locationParts] = cleaned.split(" near ");
+  return {
+    type: issue.charAt(0).toUpperCase() + issue.slice(1),
+    location: locationParts.join(" near ") || "Unknown"
+  };
+};
 
 const Event = () => {
   const latestEvent = JSON.parse(localStorage.getItem("latestEvent"));
 
-  const renderIcon = (type) => {
-    switch (type) {
-      case "traffic-jam-accident":
-        return <FaCarCrash size={24} color="#ef4444" />;
-      case "pothole":
-        return <FaExclamationTriangle size={24} color="#f59e0b" />;
-      case "water-logging":
-        return <FaWater size={24} color="#3b82f6" />;
-      case "crime":
-        return <FaUserSecret size={24} color="#a855f7" />;
-      default:
-        return <FaBolt size={24} color="#10b981" />;
-    }
-  };
-
   return (
-    <div className="event-container">
+    <div className="event">
       <div className="event-header">
         <h2 className="event-title">Live Event Feed</h2>
       </div>
 
-      {latestEvent && (
-        <div className="event-card">
-          <div className="icon-box">
-            {renderIcon(latestEvent.title)}
-          </div>
-          <div className="event-content">
-            <div className="event-name">{latestEvent.title}</div>
-            <div className="event-description">{latestEvent.description}</div>
-            <div className="event-footer">
-              <span>📍 {latestEvent.location}</span>
-              <span>👥 {latestEvent.sources} source</span>
+      {latestEvent && (() => {
+        const { type, location } = parseDescription(latestEvent.description);
+        return (
+          <div className="event-card">
+            <div className="icon-box">
+              {getIcon(type)}
             </div>
+            <div className="event-content">
+              <div className="event-name">{type} reported</div>
+              <div className="event-description">📍 {location}</div>
+              <div className="event-footer">
+                <span>{latestEvent.location}</span>
+                <span>👥 {latestEvent.sources} source</span>
+              </div>
+            </div>
+            <div className={`event-level level-${latestEvent.level}`}>Level {latestEvent.level}</div>
           </div>
-          <div className="event-level level-3">Level {latestEvent.level}</div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };
