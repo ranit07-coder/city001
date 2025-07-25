@@ -41,7 +41,11 @@ const ReportSomething = () => {
     incidentType: 'traffic-jam-accident',
     description: '',
     photo: null,
-    location: ''
+    location: '',
+    impact: '',
+    action: '',
+    level: 2,
+    timestamp: new Date().toISOString()
   });
   const [previewUrl, setPreviewUrl] = useState(null);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
@@ -108,20 +112,28 @@ const ReportSomething = () => {
         const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (aiText) {
-          // Parse AI response
-          const [detection, impact, action] = aiText.split('\n');
-          const [type, location] = detection.replace('Detected:', '').trim().split(' near ');
-          
-          // Update form with enhanced data
-          setFormData(prev => ({
-            ...prev,
-            incidentType: type.toLowerCase().trim(),
-            description: aiText,
-            location: location.trim(),
-            impact: impact.replace('Impact:', '').trim(),
-            action: action.replace('Action:', '').trim(),
-            level: getIncidentLevel(type)
-          }));
+          try {
+            const [detection, impact, action] = aiText.split('\n');
+            const [type, location] = detection.replace('Detected:', '').trim().split(' near ');
+            
+            if (!type || !location) {
+              throw new Error('Invalid AI response format');
+            }
+
+            setFormData(prev => ({
+              ...prev,
+              incidentType: type.toLowerCase().trim(),
+              description: `${type} detected near ${location}. ${action.replace('Action:', '').trim()}`,
+              location: location.trim(),
+              impact: impact.replace('Impact:', '').trim(),
+              action: action.replace('Action:', '').trim(),
+              level: getIncidentLevel(type),
+              timestamp: new Date().toISOString()
+            }));
+          } catch (error) {
+            console.error("Failed to parse AI response:", error);
+            alert("Failed to analyze image. Please try again or enter details manually.");
+          }
         } else {
           console.warn("Gemini returned no result.");
         }
@@ -132,40 +144,70 @@ const ReportSomething = () => {
     }
   };
 
-  // Add severity level mapping
   const getIncidentLevel = (type) => {
     const levels = {
-      'traffic jam': 2,
-      'major accident': 4,
-      'pothole': 2,
-      'waterlogging': 3,
-      'garbage': 2,
-      'tree fall': 3,
-      'power issue': 3,
-      'public safety': 4
+      'Traffic Jam': 2,
+      'Traffic jam': 2,
+      'Major Accident': 4,
+      'Accident': 4,
+      'Pothole': 2,
+      'Water Logging': 3,
+      'Waterlogging': 3,
+      'Crime': 4,
+      'Garbage': 2,
+      'Tree Fall': 3,
+      'Power Issue': 3,
+      'Public Safety': 4,
+      'Other Issue': 2
     };
-    return levels[type.toLowerCase()] || 2;
+    
+    const normalizedType = type.toLowerCase().trim();
+    return levels[type] || levels[Object.keys(levels).find(key => 
+      key.toLowerCase() === normalizedType
+    )] || 2;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const [typeRaw, areaRaw] = formData.description.toLowerCase().includes("near")
-      ? formData.description.replace("Detected:", "").trim().split(" near ")
-      : [formData.incidentType, formData.location];
-
-    const newEvent = {
-      title: formData.incidentType,
-      description: formData.description || "Citizen reported incident.",
-      location: formData.location || "Unknown Area",
-      level: 3,
-      sources: 1,
-      type: typeRaw?.trim() || "Civic Issue",
-      area: areaRaw?.trim() || "Unknown Area"
+    
+    // Format the incident type
+    const incidentMap = {
+      'traffic-jam-accident': 'Traffic Jam',
+      'pothole': 'Pothole',
+      'water-logging': 'Water Logging',
+      'crime': 'Crime',
+      'other': 'Other Issue'
     };
 
-    const existing = JSON.parse(localStorage.getItem("events") || "[]");
-    localStorage.setItem("events", JSON.stringify([newEvent, ...existing]));
-    navigate("/");
+    // Get the formatted incident type
+    const formattedType = incidentMap[formData.incidentType] || formData.incidentType;
+
+    // Create the event object
+    const newEvent = {
+      title: formattedType,
+      description: formData.description || `${formattedType} reported`,
+      location: formData.location || "Unknown Area",
+      level: getIncidentLevel(formattedType),
+      sources: 1,
+      type: formattedType,
+      area: formData.location || "Unknown Area",
+      timestamp: new Date().toISOString(),
+      impact: formData.impact || null,
+      action: formData.action || null
+    };
+
+    try {
+      const existing = JSON.parse(localStorage.getItem("events") || "[]");
+      localStorage.setItem("events", JSON.stringify([newEvent, ...existing]));
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save event:", error);
+      alert("Failed to submit report. Please try again.");
+    }
+
+    // Test code
+    localStorage.setItem('test', 'test');
+    localStorage.getItem('test');
   };
 
   const handleClose = () => navigate("/");
