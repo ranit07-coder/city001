@@ -57,47 +57,126 @@ const parseDescription = (description) => {
   };
 };
 
+const PredictiveAlerts = ({ events }) => {
+  const generatePredictions = (events) => {
+    const predictions = [];
+    
+    // Group events by area
+    const areaEvents = events.reduce((acc, event) => {
+      if (!acc[event.location]) {
+        acc[event.location] = [];
+      }
+      acc[event.location].push(event);
+      return acc;
+    }, {});
+
+    // Analyze patterns
+    Object.entries(areaEvents).forEach(([area, events]) => {
+      // Multiple similar events in same area
+      const typeCounts = events.reduce((acc, event) => {
+        acc[event.type] = (acc[event.type] || 0) + 1;
+        return acc;
+      }, {});
+
+      Object.entries(typeCounts).forEach(([type, count]) => {
+        if (count >= 3) {
+          predictions.push({
+            type: 'pattern',
+            message: `Multiple ${type} reports in ${area} indicate a persistent issue`,
+            severity: 'high'
+          });
+        }
+      });
+    });
+
+    return predictions;
+  };
+
+  const predictions = generatePredictions(events);
+
+  return predictions.length > 0 ? (
+    <div className="predictions-section">
+      <h3>📊 Predictive Alerts</h3>
+      {predictions.map((pred, i) => (
+        <div key={i} className={`prediction-card ${pred.severity}`}>
+          {pred.message}
+        </div>
+      ))}
+    </div>
+  ) : null;
+};
+
 const Event = () => {
   const [events, setEvents] = useState([]);
+  const [aggregatedEvents, setAggregatedEvents] = useState({});
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("events")) || [];
     setEvents(stored);
-  }, []);
 
+    // Aggregate similar events
+    const aggregated = stored.reduce((acc, event) => {
+      const key = `${event.type}-${event.location}`;
+      if (!acc[key]) {
+        acc[key] = {
+          ...event,
+          sources: 1,
+          reports: [event]
+        };
+      } else {
+        acc[key].sources++;
+        acc[key].reports.push(event);
+        if (event.level > acc[key].level) {
+          acc[key].level = event.level;
+        }
+      }
+      return acc;
+    }, {});
+
+    setAggregatedEvents(aggregated);
+  }, [events]); // Add events as a dependency
+
+  // Update the handleClearAll function
   const handleClearAll = () => {
     localStorage.removeItem("events");
     setEvents([]);
+    setAggregatedEvents({}); // Add this line to clear aggregated events
   };
 
   return (
     <div className="event">
       <div className="event-header">
         <h2 className="event-title">Live Event Feed</h2>
-        {events.length > 0 && (
+        {Object.keys(aggregatedEvents).length > 0 && (
           <button onClick={handleClearAll} className="clear-button">
             🗑️ Clear All
           </button>
         )}
       </div>
 
-      {events.map((event, index) => {
-        const { type, location } = parseDescription(event.description);
-        return (
-          <div className="event-card" key={index}>
-            <div className="icon-box">{getIcon(type)}</div>
-            <div className="event-content">
-              <div className="event-name">{type} reported</div>
-              <div className="event-description">📍 {location}</div>
-              <div className="event-footer">
-                <span>{event.location || location}</span>
-                <span>👥 {event.sources} source</span>
-              </div>
+      {Object.values(aggregatedEvents).map((event, index) => (
+        <div className="event-card" key={index}>
+          <div className="icon-box">{getIcon(event.type)}</div>
+          <div className="event-content">
+            <div className="event-name">{event.type}</div>
+            <div className="event-description">
+              <div>📍 {event.location}</div>
+              {event.impact && <div>⏱️ {event.impact}</div>}
+              {event.action && <div>💡 {event.action}</div>}
             </div>
-            <div className={`event-level level-${event.level}`}>Level {event.level}</div>
+            <div className="event-footer">
+              <span>👥 {event.sources} reports</span>
+              <span className="event-timestamp">
+                {new Date(event.reports[0].timestamp).toLocaleTimeString()}
+              </span>
+            </div>
           </div>
-        );
-      })}
+          <div className={`event-level level-${event.level}`}>
+            Level {event.level}
+          </div>
+        </div>
+      ))}
+      <PredictiveAlerts events={events} />
     </div>
   );
 };

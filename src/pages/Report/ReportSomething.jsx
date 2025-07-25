@@ -6,6 +6,35 @@ import bell from '../../assets/bell.png';
 
 const GEMINI_API_KEY = "AIzaSyAcbDCRBsGMY1JTAc5yHHAeAYWjRNRwo50";
 
+const SYSTEM_PROMPT = `You are UrbanLens AI, an advanced city monitoring agent for Bengaluru. Analyze the image to:
+
+1. IDENTIFY PRIMARY ISSUE (Choose closest match):
+- Traffic Jam (Level 2)
+- Major Accident (Level 4)
+- Road Damage/Pothole (Level 2)
+- Waterlogging/Flooding (Level 3)
+- Garbage Accumulation (Level 2)
+- Tree Fall (Level 3)
+- Power Infrastructure (Level 3)
+- Public Safety (Level 4)
+
+2. LOCATE near VERIFIED LANDMARKS:
+- Major Roads: MG Road, Old Airport Road, Outer Ring Road
+- Tech Hubs: Electronic City, Whitefield, Manyata
+- Markets: KR Market, Commercial Street
+- Junctions: Silk Board, Hebbal, Marathahalli
+- Areas: Indiranagar, Koramangala, HSR Layout
+
+3. PREDICT IMPACT:
+- Estimate duration
+- Affected radius
+- Suggested actions
+
+Respond EXACTLY in this format:
+Detected: [Issue Type] near [Landmark]
+Impact: [Duration] | [Radius] affected
+Action: [Specific recommendation]`;
+
 const ReportSomething = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [formData, setFormData] = useState({
@@ -62,14 +91,7 @@ const ReportSomething = () => {
             body: JSON.stringify({
               contents: [{
                 parts: [
-                  {
-                    text: `You are an advanced visual reasoning assistant built into a civic monitoring system designed for a smart city dashboard in Bengaluru, India. Your job is to extract one real civic issue from the image. Focus on problems like traffic jams, potholes, accidents, waterlogging, garbage, etc.
-
-Return the result in this format only:
-Detected: [issue type] near [landmark or area].
-
-Use real locations (e.g. KR Market, Whitefield Metro, Silk Board). Do not use vague phrases or add explanation.`
-                  },
+                  { text: SYSTEM_PROMPT },
                   {
                     inlineData: {
                       mimeType: file.type,
@@ -86,15 +108,43 @@ Use real locations (e.g. KR Market, Whitefield Metro, Silk Board). Do not use va
         const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (aiText) {
-          setFormData(prev => ({ ...prev, description: aiText }));
+          // Parse AI response
+          const [detection, impact, action] = aiText.split('\n');
+          const [type, location] = detection.replace('Detected:', '').trim().split(' near ');
+          
+          // Update form with enhanced data
+          setFormData(prev => ({
+            ...prev,
+            incidentType: type.toLowerCase().trim(),
+            description: aiText,
+            location: location.trim(),
+            impact: impact.replace('Impact:', '').trim(),
+            action: action.replace('Action:', '').trim(),
+            level: getIncidentLevel(type)
+          }));
         } else {
           console.warn("Gemini returned no result.");
         }
       };
       reader.readAsDataURL(file);
     } catch (err) {
-      console.error("Gemini image analysis failed:", err);
+      console.error("AI analysis failed:", err);
     }
+  };
+
+  // Add severity level mapping
+  const getIncidentLevel = (type) => {
+    const levels = {
+      'traffic jam': 2,
+      'major accident': 4,
+      'pothole': 2,
+      'waterlogging': 3,
+      'garbage': 2,
+      'tree fall': 3,
+      'power issue': 3,
+      'public safety': 4
+    };
+    return levels[type.toLowerCase()] || 2;
   };
 
   const handleSubmit = (e) => {
