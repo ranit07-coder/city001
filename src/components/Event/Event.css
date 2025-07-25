@@ -43,6 +43,12 @@
   position: relative;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .event-card:hover {
@@ -161,4 +167,51 @@
 
 .event-scroll::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.location-suggestions {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 140px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  z-index: 99;
+  position: absolute;
+}
+
+.location-suggestions li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.location-suggestions li:hover {
+  background: #f3f4f6;
+}
+.clear-button {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: auto;
+}
+
+.clear-button:hover {
+  text-decoration: underline;
+}
+.clear-button {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.clear-button:hover {
+  text-decoration: underline;
 }

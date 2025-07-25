@@ -506,4 +506,24 @@ body {
 .suggestion-item:hover {
   background-color: #f3f4f6;
 }
+.location-suggestions {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 140px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  z-index: 99;
+  position: absolute;
+}
+
+.location-suggestions li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.location-suggestions li:hover {
+  background: #f3f4f6;
+}
 
