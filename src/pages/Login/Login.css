@@ -1,0 +1,260 @@
+.signup-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  background-color: #2a2a40;
+}
+
+/* LEFT SIDE */
+.pic{
+ margin-top: 30px;
+  margin-bottom: 30px;
+  margin-left: 30px;
+  flex: 1.5;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+
+}
+.signup-left {
+  flex: 1.5;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  width: 800px;
+}
+
+.left-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  
+  
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ 
+}
+
+.logo {
+  height: 32px;
+  object-fit: contain;
+  height: 80px;
+  width: 80px;
+  
+}
+.signup-header{
+  margin-bottom: 50px;
+}
+.heading {
+  font-size: 50px;
+  margin-bottom: 5px;
+}
+
+.login-prompt {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.back-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.bottom-caption {
+  text-align: center;
+}
+
+.bottom-caption p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.carousel-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.carousel-dots .active {
+  background-color: white;
+}
+
+/* RIGHT SIDE */
+.login{
+  color: #a58bff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.login:hover {
+  text-decoration: underline;
+  color: #a58bff;
+}
+
+.signup-right {
+  flex: 1;
+  padding-left: 120px;
+  margin-right: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.signup-right h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.signup-right form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.input-row input,
+.signup-right input[type="email"],
+.signup-right input[type="password"] {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #3e3b54;
+  color: white;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.checkbox-row input {
+  margin-right: 10px;
+}
+
+.checkbox-row label a {
+  color: #a58bff;
+  text-decoration: none;
+  cursor: pointer;
+  text-decoration: underline;
+  
+}
+
+.create-btn {
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  background-color: #7b61ff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.create-btn:hover {
+  background-color: #7300ff;
+  box-shadow:  rgba(115, 0, 255)0px 0px 0px 2px inset;
+}
+
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #898787;
+}
+
+.divider-text {
+  padding: 0 10px;
+  color: #a58bff;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.auth-buttons button {
+  flex: 1;
+  padding: 10px;
+  background-color: #3e3b54;
+  color: white;
+  box-shadow: white 0px 0px 0px 1px inset;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  
+  
+}
+.auth-buttons button:hover {
+  box-shadow: rgb(115, 0, 255) 0px 0px 0px 2px inset;
+}
+
+.email-box,
+.password-box {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.googleIcon,
+.MicrosoftIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  
+}
+
