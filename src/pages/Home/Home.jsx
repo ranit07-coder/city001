@@ -9,6 +9,7 @@ import Map from './components/Map/Map.jsx'
 import Event from './components/Event/Event.jsx'
 import AIPredictions from './components/AIPredictions/AIPredictions.jsx'
 
+
 const Home = () => {
   return (
     <div className="home">
