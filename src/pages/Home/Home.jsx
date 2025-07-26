@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import './Home.css'
 import Navbar from './components/Navbar/Navbar'
 import icons8greendot from './assets/icons8-green-dot-48.png'
@@ -10,6 +11,12 @@ import Event from './components/Event/Event.jsx'
 import AIPredictions from './components/AIPredictions/AIPredictions.jsx'
 
 const Home = () => {
+  const navigate = useNavigate()
+
+  const handleClickHere = () => {
+    navigate('/bengaluru-live')
+  }
+
   return (
     <div className="home">
       <Navbar />
@@ -61,7 +68,10 @@ const Home = () => {
       </div>
 
 
-      <button className="button">
+      <button 
+        className="button" 
+        onClick={handleClickHere}
+      >
         <div className='button-text'>Click Here</div>
       </button>
 

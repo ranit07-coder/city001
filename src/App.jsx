@@ -1,12 +1,19 @@
-import React from 'react'
-import Login from './pages/Login/Login'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home/Home';
+import BengaluruLive from './pages/Live/BengaluruLive';
+import ReportSomething from './pages/Live/components/Reports/ReportSomething';
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Login />
+    <div className="app">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/bengaluru-live" element={<BengaluruLive />} />
+        <Route path="/report" element={<ReportSomething />} />
+      </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
