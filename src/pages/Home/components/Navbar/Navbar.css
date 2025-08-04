@@ -2,7 +2,8 @@ body {
     background-color: #ECEEF3;
 }
 
-.navbar{
+/* ========== NAVBAR STYLING ========== */
+.navbar {
     background-color: #ffffff;
     color: rgb(0, 0, 0);
     padding: 10px;
@@ -10,17 +11,15 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap; 
-    height : 110px;
+    height: 110px;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
     border: rgb(163, 163, 163) solid 1px;
-    
 }
 
 .pic {
     height: 85px;              
     width: auto;
 }
-
 
 .pic:hover {
     color: #ffff00;
@@ -31,66 +30,33 @@ body {
 .city {
     font-size: 18px;
     font-weight: bold;
-}
-.city:hover {
-    color: #ffcc00;
-    cursor: pointer;
-    position: left;
-    
-}
-.urbancity {
-    
-    font-size: 12px;
-    
-}
-.urbancity:hover {
-    color: #ffcc00;
-    cursor: pointer;
-    position: left;
-}
-.datetime {
-    margin-left: auto;
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
-    padding-right: 10px;
-}
-.navbar-right {
-    display: flex;
-    align-items: center;
-}
-.bell {
-    align-items: center;
-    height: 30px;
-    padding-left: 30px;
-    
+    color: black; /* Reset to black text instead of gradient */
 }
 
-.bell-button:hover {
+.city:hover {
     background: none;
     border: none;
     cursor: pointer;
     filter: drop-shadow(0 0 3px #ffe600);
 }
-.menu-button:hover {
+
+.urbancity {
+    font-size: 17px;
+    color: black; /* Reset to black text instead of gradient */
+
+}
+
+.urbancity:hover {
     background: none;
     border: none;
     cursor: pointer;
-    filter: drop-shadow(0 0 2px #ffea00);
+    filter: drop-shadow(0 0 3px #ffe600);
 }
 
-
-.dots-menu {
-    align-items: center;
-    height: 30px;
-    margin-left: 10px;
-    padding-left: 30px;
-    padding-right: 30px;
-}
 .datetime {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* aligns text to the right */
+    align-items: flex-end;
     margin-left: auto;
     font-size: 14px;
     color: #333;
@@ -107,4 +73,44 @@ body {
     font-size: 11px;
     color: #666;
     font-weight: bold;
+}
+
+.bell-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.bell-button:hover {
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: drop-shadow(0 0 3px #ffe600);
+}
+
+.bell {
+    align-items: center;
+    height: 30px;
+    padding-left: 30px;
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-button:hover {
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: drop-shadow(0 0 2px #ffea00);
+}
+
+.dots-menu {
+    align-items: center;
+    height: 30px;
+    margin-left: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
 }

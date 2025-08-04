@@ -3,37 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import './ReportSomething.css';
 import download from './assets/download.png';
 import bell from './assets/bell.png';
+import dotsMenu from './assets/dots-menu.png';
+import { FiArrowLeft, FiCamera, FiMapPin, FiSend, FiX, FiAlertCircle } from 'react-icons/fi';
 
 const GEMINI_API_KEY = "AIzaSyAcbDCRBsGMY1JTAc5yHHAeAYWjRNRwo50";
 
-const SYSTEM_PROMPT = `You are UrbanLens AI, an advanced city monitoring agent for Bengaluru. Analyze the image to:
-
-1. IDENTIFY PRIMARY ISSUE (Choose closest match):
-- Traffic Jam (Level 2)
-- Major Accident (Level 4)
-- Road Damage/Pothole (Level 2)
-- Waterlogging/Flooding (Level 3)
-- Garbage Accumulation (Level 2)
-- Tree Fall (Level 3)
-- Power Infrastructure (Level 3)
-- Public Safety (Level 4)
+const SYSTEM_PROMPT = `You are UrbanLens AI, an advanced city monitoring agent for Kolkata. Analyze the image to:
 
 2. LOCATE near VERIFIED LANDMARKS:
-- Major Roads: MG Road, Old Airport Road, Outer Ring Road
-- Tech Hubs: Electronic City, Whitefield, Manyata
-- Markets: KR Market, Commercial Street
-- Junctions: Silk Board, Hebbal, Marathahalli
-- Areas: Indiranagar, Koramangala, HSR Layout
-
-3. PREDICT IMPACT:
-- Estimate duration (How long will this last?)
-- Affected radius (How many areas are affected?)
-- Suggested actions (What should people do?)
-
-Respond EXACTLY in this format:
-Detected: [Issue Type] near [Landmark]
-Impact: [Duration] | [Radius] affected
-Action: [Specific recommendation]`;
+- Major Roads: EM Bypass, AJC Bose Road, Park Street
+- Tech Hubs: Salt Lake Sector V, New Town, Park Street
+- Markets: New Market, Gariahat, South City Mall
+- Junctions: Park Circus, Exide Crossing, Esplanade
+- Areas: Salt Lake, New Town, Ballygunge
+`;
 
 const ReportSomething = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -49,11 +32,23 @@ const ReportSomething = () => {
   });
   const [previewUrl, setPreviewUrl] = useState(null);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Add animation effect when component mounts
+  useEffect(() => {
+    const form = document.querySelector('.report-form');
+    if (form) {
+      setTimeout(() => {
+        form.classList.add('form-visible');
+      }, 100);
+    }
   }, []);
 
   const handleInputChange = (e) => {
@@ -65,10 +60,15 @@ const ReportSomething = () => {
   const fetchLocationSuggestions = async (query) => {
     if (!query) return setLocationSuggestions([]);
     const url = `https://api.maptiler.com/geocoding/${query}.json?key=KdLhMN46zBrXqGDvET6g&language=en&country=IN&limit=5`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const suggestions = data.features.map(f => f.place_name);
-    setLocationSuggestions(suggestions);
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const suggestions = data.features.map(f => f.place_name);
+      setLocationSuggestions(suggestions);
+    } catch (err) {
+      console.error("Failed to fetch location suggestions:", err);
+      setLocationSuggestions([]);
+    }
   };
 
   const handleSuggestionClick = (location) => {
@@ -82,6 +82,7 @@ const ReportSomething = () => {
 
     setFormData(prev => ({ ...prev, photo: file }));
     setPreviewUrl(URL.createObjectURL(file));
+    setIsAnalyzing(true);
 
     try {
       const reader = new FileReader();
@@ -110,6 +111,7 @@ const ReportSomething = () => {
 
         const data = await response.json();
         const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        setIsAnalyzing(false);
 
         if (aiText) {
           try {
@@ -132,16 +134,36 @@ const ReportSomething = () => {
             }));
           } catch (error) {
             console.error("Failed to parse AI response:", error);
-            alert("Failed to analyze image. Please try again or enter details manually.");
+            showNotification("Failed to analyze image. Please try again or enter details manually.", "error");
           }
         } else {
           console.warn("Gemini returned no result.");
+          showNotification("Could not analyze image. Please provide details manually.", "warning");
         }
       };
       reader.readAsDataURL(file);
     } catch (err) {
+      setIsAnalyzing(false);
       console.error("AI analysis failed:", err);
+      showNotification("Image analysis failed. Please try again.", "error");
     }
+  };
+
+  const showNotification = (message, type = "info") => {
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.innerText = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.classList.add("show");
+      setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }, 100);
   };
 
   const getIncidentLevel = (type) => {
@@ -167,8 +189,9 @@ const ReportSomething = () => {
     )] || 2;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     // Format the incident type
     const incidentMap = {
@@ -199,40 +222,79 @@ const ReportSomething = () => {
       const reports = JSON.parse(localStorage.getItem("reports") || "[]");
       localStorage.setItem("reports", JSON.stringify([newReport, ...reports]));
       
-      // Navigate back to bengaluru-live page
-      navigate("/bengaluru-live");
+      // Show success animation
+      showNotification("Report submitted successfully!", "success");
+      
+      // Add delay for animation
+      setTimeout(() => {
+        // Navigate back to kolkata-live page
+        navigate("/kolkata-live");
+      }, 1000);
+      
     } catch (error) {
       console.error("Failed to save report:", error);
-      alert("Failed to submit report. Please try again.");
+      showNotification("Failed to submit report. Please try again.", "error");
+      setIsSubmitting(false);
     }
   };
 
-  const handleClose = () => navigate("/");
+  const handleClose = () => {
+    // Add exit animation
+    const form = document.querySelector('.report-form');
+    if (form) {
+      form.classList.remove('form-visible');
+      form.classList.add('form-exit');
+      setTimeout(() => {
+        navigate("/kolkata-live");
+      }, 300);
+    } else {
+      navigate("/kolkata-live");
+    }
+  };
 
   return (
     <div className="report-page">
-      <nav className="navbar">
-        <img src={download} alt="logo" className='pic' />
-        <div className='navbar-left'>
-          <div className='city'>UrbanLense</div>
-          <div className='urbancity'>Bengaluru Live Intelligence</div>
+      <div className="navbar">
+        <img src={download} alt="" className="pic" />
+        <div className="navbar-left">
+          <div className="city">UrbanLens</div>
+          <div className="urbancity">Kolkata Live Intelligence</div>
         </div>
-        <div className='datetime'>
-          <div className='time'>{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</div>
-          <div className='date'>{currentTime.toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'short' })}</div>
+        <div className="datetime">
+          <div className="time">
+            {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
+          </div>
+          <div className="date">
+            {currentTime.toLocaleDateString('en-US', {
+              weekday: 'short',
+              day: '2-digit',
+              month: 'short'
+            })}
+          </div>
         </div>
-        <button className='bell-button'><img src={bell} alt="bell" className='bell' /></button>
-      </nav>
+        <button className="bell-button"><img src={bell} alt="" className="bell" /></button>
+        <button className="menu-button"><img src={dotsMenu} alt="" className="dots-menu" /></button>
+      </div>
 
       <main className="report-content">
         <form onSubmit={handleSubmit} className="report-form">
           <header className="report-header">
-            <h1 className="report-title">Report an Incident</h1>
-            <button type="button" className="report-close-button" onClick={handleClose}>✕</button>
+            <div className="report-title-container">
+              <button type="button" onClick={handleClose} className="back-button" aria-label="Go back">
+                <FiArrowLeft />
+              </button>
+              <h1 className="report-title">Report an Incident</h1>
+            </div>
+            <button type="button" className="report-close-button" onClick={handleClose} aria-label="Close form">
+              <FiX />
+            </button>
           </header>
 
           <section className="report-section">
-            <label htmlFor="incidentType" className="report-label">What's happening?</label>
+            <label htmlFor="incidentType" className="report-label">
+              <FiAlertCircle className="input-icon" />
+              What's happening?
+            </label>
             <div className="report-select-wrapper">
               <select id="incidentType" name="incidentType" className="report-select" value={formData.incidentType} onChange={handleInputChange}>
                 <option value="traffic-jam-accident">Traffic Jam or Accident</option>
@@ -257,9 +319,8 @@ const ReportSomething = () => {
             ></textarea>
           </section>
 
-          {/* Add new What to do section */}
           <section className="report-section">
-            <label htmlFor="action" className="report-label">What to do ?</label>
+            <label htmlFor="action" className="report-label">What to do?</label>
             <textarea 
               id="action" 
               name="action" 
@@ -271,9 +332,8 @@ const ReportSomething = () => {
             ></textarea>
           </section>
 
-          {/* Add new How long section */}
           <section className="report-section">
-            <label htmlFor="impact" className="report-label">How long ?</label>
+            <label htmlFor="impact" className="report-label">How long?</label>
             <textarea 
               id="impact" 
               name="impact" 
@@ -286,20 +346,27 @@ const ReportSomething = () => {
           </section>
 
           <section className="report-section">
-            <label htmlFor="location" className="report-label">Location</label>
-            <input id="location" name="location" type="text" className="report-input" placeholder="Start typing area (e.g. Indiranagar)" value={formData.location} onChange={handleInputChange} autoComplete="off" />
+            <label htmlFor="location" className="report-label">
+              <FiMapPin className="input-icon" />
+              Location
+            </label>
+            <input id="location" name="location" type="text" className="report-input" placeholder="Start typing area (e.g. Salt Lake)" value={formData.location} onChange={handleInputChange} autoComplete="off" />
             {locationSuggestions.length > 0 && (
               <ul className="location-suggestions">
                 {locationSuggestions.map((loc, i) => (
-                  <li key={i} onClick={() => handleSuggestionClick(loc)}>{loc}</li>
+                  <li className="suggestion-item" key={i} onClick={() => handleSuggestionClick(loc)}>{loc}</li>
                 ))}
               </ul>
             )}
           </section>
 
           {previewUrl && (
-            <div className="photo-preview">
+            <div className={`photo-preview ${isAnalyzing ? 'analyzing' : ''}`}>
               <img src={previewUrl} alt="Preview" className="preview-img" />
+              {isAnalyzing && <div className="analyzing-overlay">
+                <div className="loading-spinner"></div>
+                <p>Analyzing image...</p>
+              </div>}
             </div>
           )}
 
@@ -307,9 +374,20 @@ const ReportSomething = () => {
             <div className="report-actions">
               <label htmlFor="photo-upload" className="report-action-button photo-button">
                 <input id="photo-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoUpload} />
-                📷 Add Photo
+                <FiCamera className="button-icon" /> Add Photo
               </label>
-              <button type="submit" className="send-button">Send Report</button>
+              <button type="submit" className="send-button" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <div className="button-spinner"></div>
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    <FiSend className="button-icon" /> Send Report
+                  </>
+                )}
+              </button>
             </div>
           </footer>
         </form>

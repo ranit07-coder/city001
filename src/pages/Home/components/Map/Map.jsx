@@ -32,7 +32,7 @@ const Map = () => {
       mapInstance.current = new maplibregl.Map({
         container: mapRef.current,
         style: mapStyles[currentStyle],
-        center: [77.5946, 12.9716],
+        center: [88.3639, 22.5726],
         zoom: 12,
         attributionControl: true
       });
@@ -49,7 +49,7 @@ const Map = () => {
           color: "#FF0000",
           draggable: false
         })
-          .setLngLat([77.5946, 12.9716])
+          .setLngLat([88.3639, 22.5726])
           .addTo(mapInstance.current);
       });
     }

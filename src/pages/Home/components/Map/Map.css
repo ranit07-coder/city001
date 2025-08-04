@@ -118,4 +118,9 @@
     z-index: 9999;
 }
 
-/* Keep other existing styles... */
+/* Add style for Google Maps info windows */
+.gm-style-iw {
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9999;
+}
