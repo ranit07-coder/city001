@@ -45,17 +45,19 @@
 }
 
 .signup-header {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-.heading {
-  font-size: 50px;
-  margin-bottom: 5px;
+.signup-header .heading {
+  font-size: 42px;
+  margin-bottom: 15px;
+  line-height: 1.2;
 }
 
 .login-prompt {
-  font-size: 14px;
-  margin-bottom: 20px;
+  font-size: 16px;
+  margin-bottom: 2px;
 }
 
 .back-button {
@@ -118,9 +120,21 @@
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
-.input-row input,
+.input-row input {
+  flex: 1 1 45%;
+  min-width: 0;
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #3e3b54;
+  color: white;
+}
+
 .signup-right input[type="email"],
 .signup-right input[type="password"] {
   flex: 1;
@@ -190,7 +204,7 @@
 .auth-buttons {
   display: flex;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 .auth-buttons button {
@@ -241,3 +255,37 @@
   padding: 0;
   font: inherit;
 }
+
+/* Add below the existing styles */
+
+.login-box-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+}
+
+.login-box {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  max-height: 90vh; /* Key fix */
+  overflow-y: auto;  /* Enables scroll if content overflows */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Adds vertical spacing between all items */
+}
+
+@media (max-height: 700px) {
+  .login-box {
+    max-height: 80vh;
+    padding: 20px;
+  }
+}
+
