@@ -15,7 +15,7 @@ const Home = () => {
   const navigate = useNavigate()
 
   const handleClickHere = () => {
-    navigate('/bengaluru-live')
+    navigate('/kolkata-live')
   }
 
   return (

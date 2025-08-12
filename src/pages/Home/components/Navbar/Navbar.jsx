@@ -25,8 +25,8 @@ const Navbar = () => {
       <img src={download} alt="" className='pic' />
 
       <div className='navbar-left'>
-        <div className='city'>UrbanLance</div>
-        <div className='urbancity'>Bengaluru Live Intelligence</div>
+        <div className='city'>UrbanLens</div>
+        <div className='urbancity'>Kolkata Live Intelligence</div>
       </div>
 
       <div className='datetime'>
