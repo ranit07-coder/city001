@@ -1,0 +1,126 @@
+.map {
+    position: relative;
+    width: 1400px;
+    height: 500px;      /* Reduced height */
+    background: transparent;
+    margin: 20px auto;  /* Added vertical margin */
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.map-controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.controls-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Filter button styles */
+.filter {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    width: 120px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 9999;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.filter:hover {
+    background-color: #f8f8f8;
+    transition: background-color 0.3s ease;
+}
+
+/* Location button styles */
+.location {
+    display: flex;
+    align-items: center;
+    width: 120px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 9999;
+    padding: 10px 20px;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.location:hover {
+    background-color: #f8f8f8;
+}
+
+/* Filter options styles */
+.filter-options {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 10000;
+    width: 120px;
+}
+
+.filter-options button {
+    background: none;
+    border: none;
+    padding: 8px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.filter-options button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Update map container to ensure it doesn't overlap controls */
+.map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;    /* Added border radius to match parent */
+    margin: 0;
+    box-shadow: none;
+    z-index: 1;
+}
+
+/* Error message styles */
+.error-message {
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    background: #ff6b6b;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9999;
+}
+
+/* Add style for Google Maps info windows */
+.gm-style-iw {
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9999;
+}
