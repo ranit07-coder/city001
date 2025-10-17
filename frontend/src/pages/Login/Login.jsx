@@ -38,25 +38,71 @@ const Login = () => {
   };
 
   // Submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     if (isLogin) {
       // LOGIN FLOW
-      if (formData.email && formData.password) {
-        localStorage.setItem("isAuthenticated", "true");
-        navigate("/home");
-      } else {
+      if (!formData.email || !formData.password) {
         setError("Please fill in both email and password");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("isAuthenticated", "true");
+          navigate("/home");
+        } else {
+          setError(data.msg || "Login failed");
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        setError("Network error. Please try again.");
       }
     } else {
       // SIGNUP FLOW
-      if (formData.email && formData.password && formData.firstName && formData.lastName) {
-        setIsLogin(true);
-        setError("Signup successful ✅ Please login now.");
-      } else {
+      if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
         setError("Please fill in all fields");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            firstName: formData.firstName,
+            lastName: formData.lastName
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setIsLogin(true);
+          setFormData({ email: "", password: "", firstName: "", lastName: "" });
+          setError("✅ Signup successful! Please login now.");
+        } else {
+          setError(data.msg || "Signup failed");
+        }
+      } catch (err) {
+        console.error("Signup error:", err);
+        setError("Network error. Please try again.");
       }
     }
   };

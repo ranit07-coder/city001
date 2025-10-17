@@ -10,7 +10,7 @@ const { analyzeMedia } = require("./services/analyzer");
 
 // Route modules
 const authRoutes = require("./routes/authRoutes");
-const statsRoutes = require("./routes/statsRoutes");
+const statsRoutes = require("./routes/stats");
 const predictionRoutes = require("./routes/predictionRoutes");
 const alerts = require("./routes/alerts");
 
@@ -21,10 +21,7 @@ app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
 app.use(express.json());
 
 // DB Connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB error:", err));
 
