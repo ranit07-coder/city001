@@ -63,7 +63,7 @@ const TitlePage = () => {
             <h1>UrbanLens</h1>
             <h2>Let Your City Breathe!</h2>
             <p className="highlight">Specializing in modern web development and cyber systems</p>
-            <a href="#contact" className="cta-button">Let's Connect</a>
+            <button onClick={() => navigate('/login', { state: { isSignup: true } })} className="cta-button">Let's Connect</button>
           </div>
         </section>
       </div>

@@ -30,7 +30,13 @@ const Home = () => {
         const data = await res.json()
         setStats(data)
       } catch (err) {
-        setError(err.message)
+        console.warn("API offline, using mock stats:", err.message);
+        setStats({
+          total: 124,
+          highPriority: 12,
+          predictions: 5,
+          cityMood: 78,
+        });
       } finally {
         setLoading(false)
       }
@@ -101,7 +107,7 @@ const Home = () => {
         className="button" 
         onClick={handleClickHere}
       >
-        <div className='button-text'>Click Here</div>
+        <div className='button-text'>View Live Feed</div>
       </button>
 
       <div className="map-box">

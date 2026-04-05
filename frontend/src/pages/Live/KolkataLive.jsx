@@ -399,7 +399,7 @@ const KolkataLive = () => {
           <div className="top-right">
             <button 
               className="report-btn"
-              onClick={() => navigate('/report-something')}
+              onClick={() => navigate('/report')}
             >
               <FiPlus /> Report Something
             </button>

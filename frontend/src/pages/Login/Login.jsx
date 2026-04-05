@@ -1,6 +1,6 @@
 // No change in imports
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Login.css";
 import bg1 from "./assets/background1.jpg";
 import bg2 from "./assets/background2.jpg";
@@ -13,7 +13,8 @@ const images = [bg1, bg2, bg3];
 
 const Login = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(location.state?.isSignup ? false : true);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -122,7 +123,7 @@ const Login = () => {
         <div className="left-overlay">
           <div className="top-bar">
             <img src={downlode} alt="Logo" className="logo" />
-            <button className="back-button">Back to website</button>
+            <button className="back-button" onClick={() => navigate('/')}>← Back</button>
           </div>
           <div className="bottom-caption">
             <p>Capturing Moments, Creating Memories</p>
@@ -226,6 +227,20 @@ const Login = () => {
               <button className="microsoft-btn">
                 <img src={microsoftIcon} alt="" className="MicrosoftIcon" />
                 <div className="microsoft-text">Microsoft</div>
+              </button>
+            </div>
+
+            <div className="guest-login-container" style={{ marginTop: '15px' }}>
+              <button 
+                className="create-btn" 
+                style={{ backgroundColor: '#4a5568', width: '100%' }}
+                onClick={() => {
+                  localStorage.setItem("token", "guest-token-123");
+                  localStorage.setItem("isAuthenticated", "true");
+                  navigate("/home");
+                }}
+              >
+                Continue as Guest
               </button>
             </div>
           </div>

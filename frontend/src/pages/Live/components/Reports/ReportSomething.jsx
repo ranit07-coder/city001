@@ -33,6 +33,7 @@ const ReportSomething = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const navigate = useNavigate();
 
@@ -224,12 +225,13 @@ const ReportSomething = () => {
       
       // Show success animation
       showNotification("Report submitted successfully!", "success");
+      setIsSuccess(true);
       
       // Add delay for animation
       setTimeout(() => {
         // Navigate back to kolkata-live page
         navigate("/kolkata-live");
-      }, 1000);
+      }, 1500);
       
     } catch (error) {
       console.error("Failed to save report:", error);
@@ -378,10 +380,14 @@ const ReportSomething = () => {
               </label>
               <button type="submit" className="send-button" disabled={isSubmitting}>
                 {isSubmitting ? (
+                  isSuccess ? (
+                    <span>✅ Submitted!</span>
+                  ) : (
                   <>
                     <div className="button-spinner"></div>
                     <span>Sending...</span>
                   </>
+                  )
                 ) : (
                   <>
                     <FiSend className="button-icon" /> Send Report

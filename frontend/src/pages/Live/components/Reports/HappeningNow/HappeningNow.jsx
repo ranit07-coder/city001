@@ -35,7 +35,7 @@ const HappeningNow = ({ reports, getIncidentIcon }) => {
             />
           ))
         ) : (
-          <p className="no-reports-message">No user reports yet. Be the first to report an incident!</p>
+          <p className="no-reports-message">Showing verified city alerts. Be the first to add a direct community report!</p>
         )}
         
         {/* Static alerts with enhanced styling */}
